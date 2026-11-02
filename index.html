@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f05aa8">
+  <title>Birthday Surprise 💗</title>
+  <style>
+    :root {
+      --pink: #f05aa8;
+      --deep-pink: #c91f79;
+      --light-pink: #ffe7f4;
+      --gold: #ffe08a;
+      --ink: #8e1958;
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; }
+    body {
+      margin: 0; min-height: 100vh; overflow-x: hidden;
+      font-family: system-ui, -apple-system, "Noto Sans Bengali", Arial, sans-serif;
+      color: white;
+      background: radial-gradient(ellipse at 50% 0%, #ffcae8 0%, #f779bd 42%, #9d1a66 100%);
+    }
+    button { font: inherit; }
+    .page {
+      min-height: 100svh; width: 100%; position: relative; isolation: isolate;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 30px 16px 24px; text-align: center; overflow: hidden;
+    }
+    .glow {
+      position: absolute; z-index: -2; width: 75vw; height: 75vw; max-width: 560px; max-height: 560px;
+      border-radius: 50%; background: #ffd8ef55; filter: blur(24px); top: 12%; left: 50%; transform: translateX(-50%);
+    }
+    h1 { margin: 0; font-size: clamp(27px, 7vw, 43px); line-height: 1.2; text-shadow: 0 4px 16px #8a124b55; }
+    .subtitle { max-width: 330px; margin: 12px auto 0; line-height: 1.7; font-size: 15px; color: #fff8fc; }
+    .name-pill { display: inline-block; margin-top: 14px; padding: 7px 15px; border: 1px solid #ffffff8a; border-radius: 99px; background: #ffffff22; font-size: 14px; }
+
+    /* Floating hearts are decorative and never block taps. */
+    .float-heart { position: fixed; z-index: -1; bottom: -50px; pointer-events: none; color: #fff4fb; opacity: 0; animation: drift linear infinite; text-shadow: 0 2px 12px #c11d7755; }
+    @keyframes drift { 12% { opacity: .75; } 100% { transform: translate3d(22px, -115vh, 0) rotate(35deg); opacity: 0; } }
+
+    .scene { width: 260px; height: 270px; position: relative; margin: 10px auto 0; perspective: 900px; flex: 0 0 auto; }
+    .floor-shadow { position: absolute; left: 26px; right: 26px; bottom: 21px; height: 22px; border-radius: 50%; background: #67104466; filter: blur(9px); }
+    .gift { position: absolute; width: 180px; height: 145px; left: 40px; bottom: 35px; transform-style: preserve-3d; animation: bob 2.5s ease-in-out infinite; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    @keyframes bob { 0%,100% { translate: 0 0; } 50% { translate: 0 -7px; } }
+    .box-front { position: absolute; bottom: 0; left: 0; width: 180px; height: 108px; overflow: hidden; border: 2px solid #ffd7ec; border-radius: 3px 3px 10px 10px; background: linear-gradient(110deg,#ff8bc8,#e52e8b 72%,#c91d75); box-shadow: inset -12px 0 18px #9b125633, 0 13px 24px #6f104344; }
+    .box-front::after { content: "♥"; position: absolute; left: 78px; top: 50px; color: #b41467; font-size: 21px; }
+    .ribbon { position: absolute; z-index: 1; top: 0; bottom: 0; left: 72px; width: 34px; background: linear-gradient(90deg,#e7bb42,#fff1b0 48%,#f4ce57); box-shadow: 0 0 5px #a75a2533; }
+    .side { position: absolute; right: -20px; bottom: 0; width: 20px; height: 108px; transform: skewY(-35deg); transform-origin: left bottom; border-radius: 0 0 5px 0; background: linear-gradient(90deg,#c61d75,#9f155e); }
+    .lid { position: absolute; z-index: 5; width: 204px; height: 36px; left: -12px; bottom: 105px; border: 2px solid #ffe2f1; border-radius: 6px; background: linear-gradient(110deg,#ffb1db,#f54a9f); box-shadow: 0 5px 10px #86114e44; transform-origin: 8% 100%; transform-style: preserve-3d; transition: transform 1s cubic-bezier(.2,.8,.2,1); }
+    .bow { position: absolute; top: -38px; left: 76px; font-size: 42px; filter: drop-shadow(0 3px 2px #92135433); }
+    .inside-gift { position: absolute; z-index: 2; width: 148px; height: 86px; bottom: 14px; left: 16px; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(ellipse,#fff9fd,#ffc7e5); font-size: 48px; opacity: 0; transform: translateY(15px) scale(.8); transition: opacity .6s .2s, transform .7s .2s; }
+    .gift.open { animation: none; }
+    .gift.open .lid { transform: translateY(-108px) rotate(-27deg); }
+    .gift.open .inside-gift { opacity: 1; transform: translateY(-12px) scale(1); }
+    .tap-hint { margin: 0 0 10px; font-size: 14px; color: #fff6fb; }
+
+    .btn { position: relative; z-index: 3; border: 0; border-radius: 999px; padding: 13px 23px; min-height: 46px; font-weight: 750; cursor: pointer; transition: transform .15s, box-shadow .2s; }
+    .btn:active { transform: scale(.97); }
+    .primary { color: #8e1958; background: linear-gradient(120deg,#fff3b4,#ffd66a); box-shadow: 0 6px 18px #6c0e4544; }
+    .secondary { color: #a31b65; background: #fff8fc; border: 1px solid #f7b7d8; margin-top: 10px; }
+    .letter { display: none; width: min(100%, 370px); padding: 23px 20px; border-radius: 24px; color: var(--ink); background: linear-gradient(145deg,#fffafd,#ffe8f4); box-shadow: 0 14px 38px #640b3c55; position: relative; z-index: 2; animation: letter-in .7s ease both; }
+    .letter.show { display: block; }
+    @keyframes letter-in { from { opacity: 0; transform: translateY(22px) scale(.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .heart-beat { font-size: 43px; animation: beat 1.15s ease-in-out infinite; }
+    @keyframes beat { 0%,100% { transform: scale(1); } 15% { transform: scale(1.17); } 30% { transform: scale(1); } 45% { transform: scale(1.1); } }
+    .letter h2 { margin: 5px 0 12px; font-size: 27px; }
+    .letter p { margin: 10px 0; font-size: 15px; line-height: 1.85; }
+    .signature { font-weight: 800; margin-top: 16px !important; }
+    .footer { margin-top: 20px; font-size: 12px; color: #ffe7f5; }
+    .confetti { position: fixed; top: -20px; z-index: 10; pointer-events: none; animation: confetti-fall 2.8s linear forwards; }
+    @keyframes confetti-fall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="glow" aria-hidden="true"></div>
+    <h1>🎂 A Little Surprise 🎂</h1>
+    <p class="subtitle">A tiny gift, a big smile, and a wish made just for you. 💗</p>
+    <div class="name-pill">Especially for <strong id="recipientLabel">Friend</strong> ✨</div>
+
+    <div class="scene" aria-label="Birthday gift box">
+      <div class="floor-shadow"></div>
+      <div class="gift" id="gift" role="button" tabindex="0" aria-label="Open the birthday gift" aria-expanded="false">
+        <div class="inside-gift" aria-hidden="true">💝</div>
+        <div class="side"></div>
+        <div class="box-front"><div class="ribbon"></div></div>
+        <div class="lid"><span class="bow">🎀</span></div>
+      </div>
+    </div>
+    <p class="tap-hint" id="hint">Tap the gift box to open it ✨</p>
+    <button class="btn primary" id="openButton" type="button">Open Your Gift 🎁</button>
+
+    <section class="letter" id="letter" aria-live="polite">
+      <div class="heart-beat" aria-hidden="true">💖</div>
+      <h2>Happy Birthday, <span id="recipientName">Friend</span>! 🎉</h2>
+      <p>VERY VERY LOVE FOR YOU MY BROTHER! ।</p>
+      <p>CARY ON BROTHER 🌸</p>
+      <p>AND AGAIN     
+        HAPPY BIRTHDAY MY BROTHER! ✨</p>
+      <p class="signature">With lots of love, 💗<br><span id="senderName">Your Name</span></p>
+    </section>
+
+    <button class="btn secondary" id="replayButton" type="button" hidden>Replay Surprise ↻</button>
+    <div class="footer">Made with ♡ just for you</div>
+  </main>
+
+  <script>
+    // Change these two names to personalise your website.
+    const RECIPIENT_NAME = "MARZAN";
+    const SENDER_NAME = "RAFI";
+
+    const gift = document.getElementById("gift");
+    const letter = document.getElementById("letter");
+    const openButton = document.getElementById("openButton");
+    const replayButton = document.getElementById("replayButton");
+    const hint = document.getElementById("hint");
+    let isOpen = false;
+
+    document.getElementById("recipientLabel").textContent = RECIPIENT_NAME;
+    document.getElementById("recipientName").textContent = RECIPIENT_NAME;
+    document.getElementById("senderName").textContent = SENDER_NAME;
+
+    function makeConfetti() {
+      const symbols = ["💗", "✨", "💕", "✦", "🌸"];
+      for (let i = 0; i < 28; i++) {
+        const bit = document.createElement("span");
+        bit.className = "confetti";
+        bit.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        bit.style.left = Math.random() * 100 + "vw";
+        bit.style.fontSize = (12 + Math.random() * 15) + "px";
+        bit.style.animationDelay = (Math.random() * 0.7) + "s";
+        document.body.appendChild(bit);
+        bit.addEventListener("animationend", () => bit.remove());
+      }
+    }
+
+    function openGift() {
+      if (isOpen) return;
+      isOpen = true;
+      gift.classList.add("open");
+      gift.setAttribute("aria-expanded", "true");
+      letter.classList.add("show");
+      hint.textContent = "Your special surprise is here! 💖";
+      openButton.hidden = true;
+      replayButton.hidden = false;
+      makeConfetti();
+      setTimeout(() => letter.scrollIntoView({ behavior: "smooth", block: "nearest" }), 350);
+    }
+
+    function resetGift() {
+      isOpen = false;
+      gift.classList.remove("open");
+      gift.setAttribute("aria-expanded", "false");
+      letter.classList.remove("show");
+      hint.textContent = "Tap the gift box to open it ✨";
+      openButton.hidden = false;
+      replayButton.hidden = true;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    openButton.addEventListener("click", openGift);
+    replayButton.addEventListener("click", resetGift);
+    gift.addEventListener("click", openGift);
+    gift.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openGift();
+      }
+    });
+
+    // Add gentle floating hearts in the background.
+    const heartSymbols = ["♥", "♡", "💕", "✧"];
+    for (let i = 0; i < 20; i++) {
+      const heart = document.createElement("span");
+      heart.className = "float-heart";
+      heart.textContent = heartSymbols[i % heartSymbols.length];
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = (14 + Math.random() * 20) + "px";
+      heart.style.animationDuration = (7 + Math.random() * 10) + "s";
+      heart.style.animationDelay = (-Math.random() * 15) + "s";
+      document.body.appendChild(heart);
+    }
+  </script>
+</body>
+</html>
